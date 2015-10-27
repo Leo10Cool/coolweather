@@ -4,6 +4,8 @@ android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
+    android {compileOptions.encoding = "GBK"}
+
     defaultConfig {
         applicationId "com.coolweather.app"
         minSdkVersion 14
