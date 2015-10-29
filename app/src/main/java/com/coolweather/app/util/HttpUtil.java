@@ -21,7 +21,6 @@ public class HttpUtil {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.w(TAG,"a");
                 HttpURLConnection connection = null;
                 try {
                     URL url = new URL(address);

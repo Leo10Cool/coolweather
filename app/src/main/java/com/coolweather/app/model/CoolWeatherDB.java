@@ -42,7 +42,7 @@ public class CoolWeatherDB {
 
     //    将Province实例存储到数据库
     public void saveProvince(Province province) {
-        Log.w(TAG,"a");
+
         if (province != null) {
             ContentValues values = new ContentValues();
             values.put("province_name", province.getProvinceName());
@@ -53,7 +53,7 @@ public class CoolWeatherDB {
 
     //    从数据库读取Province实例
     public List<Province> loadProvince() {
-        Log.w(TAG,"b");
+
         List<Province> list = new ArrayList<Province>();
         Cursor cursor = db.query("Province", null, null, null, null, null, null);
         if (cursor.moveToFirst()) {

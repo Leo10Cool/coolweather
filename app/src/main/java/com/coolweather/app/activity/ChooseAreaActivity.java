@@ -46,7 +46,6 @@ public class ChooseAreaActivity extends ActionBarActivity {
     private ArrayAdapter<String> adapter;
     private CoolWeatherDB coolWeatherDB;
 
-
     private List<String> dataList = new ArrayList<String>();
 
     //    省级表
@@ -67,12 +66,27 @@ public class ChooseAreaActivity extends ActionBarActivity {
     //    当前选中的级别
     private int currentLevel;
 
+    //    判断是否从WeatherActivity跳转过来
+    private boolean isFromWeatherActivity;
+
+    private boolean isBackFromWeatherActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity",false);
+        isBackFromWeatherActivity = getIntent().getBooleanExtra("back_from_weather_activity",false);
+//        if (isBackFromWeatherActivity){
+//            Log.e(TAG,"true");
+//        }else if (!isBackFromWeatherActivity){
+//            Log.e(TAG,"false");
+//        }
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (prefs.getBoolean("city_selected",false)){
+        // 已经选择了城市且不是从WeatherActivity跳转过来，才会直接跳转到WeatherActivity
+
+
+        if (prefs.getBoolean("city_selected",false) && !isFromWeatherActivity){
             Intent intent = new Intent(this,WeatherActivity.class);
             startActivity(intent);
             finish();
@@ -101,7 +115,7 @@ public class ChooseAreaActivity extends ActionBarActivity {
 //                    启动 WeatherActivity，并把当前选中县的县级代号传递 过去。
                     String countyCode = countyList.get(index).getCountyCode();
                     Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
-                    intent.putExtra("county_Code",countyCode);
+                    intent.putExtra("county_code",countyCode);
                     startActivity(intent);
                     finish();
                 }
@@ -116,9 +130,9 @@ public class ChooseAreaActivity extends ActionBarActivity {
 
     //    查询全国所有的省，优先从数据库查询，如果没有查询到再去服务器上查询。
     private void queryProvinces() {
-        Log.d(TAG, "a");
+
         provinceList = coolWeatherDB.loadProvince();
-        Log.d(TAG, "b");
+
         if (provinceList.size() > 0) {
             dataList.clear();
             for (Province province : provinceList) {
@@ -131,7 +145,7 @@ public class ChooseAreaActivity extends ActionBarActivity {
             * */
             adapter.notifyDataSetChanged();
             listView.setSelection(0);//listview.setselection(position),表示将列表移动到指定的Position处。
-            titleText.setText("China");
+            titleText.setText("中国");
             currentLevel = LEVEL_PROVINCE;
         } else {
             queryFromServer(null, "province");
@@ -176,7 +190,6 @@ public class ChooseAreaActivity extends ActionBarActivity {
     //    根据传入的代号和类型从服务器上查询省市县数据
     private void queryFromServer(final String code, final String type) {
         String address;
-        Log.w(TAG,"c");
         if (!TextUtils.isEmpty(code)) {
             address = "http://www.weather.com.cn/data/list3/city" + code + ".xml";
         } else {
@@ -185,7 +198,7 @@ public class ChooseAreaActivity extends ActionBarActivity {
         showProgressDialog();
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
             @Override
-            public void onFinish(String response) {
+            public void onFinish(String response) { //response:服务器传输的JSON数据转换而成
                 boolean result = false;
                 if ("province".equals(type)) {
                     result = Utility.handleProvinceResponse(coolWeatherDB, response);

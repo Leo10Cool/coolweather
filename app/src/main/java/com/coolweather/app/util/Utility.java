@@ -105,12 +105,12 @@ public class Utility {
             JSONObject jsonObject = new JSONObject(response);
             JSONObject weatherInfo = jsonObject.getJSONObject("weatherinfo");
             String cityName = weatherInfo.getString("city");
-            String weatherCode = weatherInfo.getString("cityId");
+            String weatherCode = weatherInfo.getString("cityid");
             String temp1 = weatherInfo.getString("temp1");
             String temp2 = weatherInfo.getString("temp2");
             String weatherDesp = weatherInfo.getString("weather");
             String publishTime = weatherInfo.getString("ptime");
-            saveWeatherInfo(context,cityName,weatherCode,temp1,temp2,weatherDesp,publishTime);
+            saveWeatherInfo(context, cityName, weatherCode, temp1, temp2, weatherDesp,publishTime);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -121,12 +121,11 @@ public class Utility {
     * */
     public static void saveWeatherInfo(Context context,String cityName,String weatherCode,
                                        String temp1,String temp2,String weatherDesp,String publishTime){
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 //        存储了一个 city_selected 标志位，以此来辨别当前是否已经选中了一个城市
 //        如果为 true 就说明当前已经选择过城市了，直接跳转到 WeatherActivity 即可
-        editor.putBoolean("city_selected",true);
+        editor.putBoolean("city_selected", true);
         editor.putString("city_name", cityName);
         editor.putString("weather_code", weatherCode);
         editor.putString("temp1", temp1);
@@ -135,7 +134,6 @@ public class Utility {
         editor.putString("publish_time",publishTime);
         editor.putString("current_date",sdf.format(new Date()));
         editor.commit();
-
     }
 
 }
