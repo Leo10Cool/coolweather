@@ -6,24 +6,70 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#484E61">
+        android:layout_height="56dp"
+        android:background="@color/dark_gray">
+
+        <ImageView
+            android:id="@+id/drawer_indicator"
+            android:layout_width="@dimen/actionbar_dimen"
+            android:layout_height="@dimen/actionbar_dimen"
+            android:scaleType="centerInside"
+            android:background="@drawable/drawer_selector"
+            android:layout_gravity="start"
+            />
 
         <TextView
             android:id="@+id/title_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_height="@dimen/actionbar_dimen"
+            android:gravity="center"
+            android:layout_centerInParent="true"
             android:textColor="#fff"
             android:textSize="24sp" />
 
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/list_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-    </ListView>
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+
+        <ListView
+            android:id="@+id/list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </ListView>
+
+        <ListView
+            android:id="@+id/left_drawer"
+            android:layout_width="240dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:background="@color/darker_gray"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
+            >
+
+        </ListView>
+
+        <!--<TextView-->
+        <!--android:id="@+id/drawer_content"-->
+        <!--android:layout_width="240dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="start"-->
+        <!--android:gravity="center"-->
+        <!--android:text="@string/drawer_hint"-->
+        <!--android:textColor="@color/light_gray"-->
+        <!--android:background="@color/darker_gray"-->
+
+
+        <!--/>-->
+
+    </android.support.v4.widget.DrawerLayout>
 
 </LinearLayout>

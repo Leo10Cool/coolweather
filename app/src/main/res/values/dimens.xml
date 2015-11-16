@@ -2,4 +2,10 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="actionbar_dimen">56dp</dimen>
+
+    <dimen name="preference_icon_width">50.0dip</dimen>
+    <dimen name="preference_margin">19.0dip</dimen>
+    <dimen name="preference_widget_icon_width">48.0dip</dimen>
+    <dimen name="list_item_height">51.0dip</dimen>
 </resources>

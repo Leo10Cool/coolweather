@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="light_gray">#c2c7cc</color><!--按钮颜色 -->
+    <color name="dark_gray">#3d454c</color><!--标题栏颜色 -->
+    <color name="dark_gray_pressed">#373e44</color><!-- 按钮点击时背景颜色-->
+    <color name="darker_gray">#1f2226</color><!-- 抽屉菜单底色-->
+</resources>

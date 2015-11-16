@@ -3,8 +3,10 @@ package com.coolweather.app.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,12 +28,15 @@ import com.coolweather.app.model.City;
 import com.coolweather.app.model.CoolWeatherDB;
 import com.coolweather.app.model.County;
 import com.coolweather.app.model.Province;
+import com.coolweather.app.util.DrawerArrowDrawable;
 import com.coolweather.app.util.HttpCallbackListener;
 import com.coolweather.app.util.HttpUtil;
 import com.coolweather.app.util.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.view.Gravity.START;
 
 public class ChooseAreaActivity extends ActionBarActivity {
 
@@ -71,6 +77,13 @@ public class ChooseAreaActivity extends ActionBarActivity {
 
     private boolean isBackFromWeatherActivity;
 
+
+    private DrawerArrowDrawable drawerArrowDrawable;
+    private float offset;
+    private boolean flipped;
+    private ListView drawerListView ;
+    private ArrayAdapter<String> drawerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +108,16 @@ public class ChooseAreaActivity extends ActionBarActivity {
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.choose_area);
 
+//      Drawer
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final ImageView imageView = (ImageView) findViewById(R.id.drawer_indicator);
+        final Resources resources = getResources();
+
+        drawerListView = (ListView) findViewById(R.id.left_drawer);
+        drawerAdapter = new ArrayAdapter<String>(this,R.layout.list_item1,Data());
+        drawerListView.setAdapter(drawerAdapter);
+
+
 
         listView = (ListView) findViewById(R.id.list_view);
         titleText = (TextView) findViewById(R.id.title_text);
@@ -111,11 +134,11 @@ public class ChooseAreaActivity extends ActionBarActivity {
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(index);
                     queryCounties();
-                } else if (currentLevel == LEVEL_COUNTY){
+                } else if (currentLevel == LEVEL_COUNTY) {
 //                    启动 WeatherActivity，并把当前选中县的县级代号传递 过去。
                     String countyCode = countyList.get(index).getCountyCode();
-                    Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
-                    intent.putExtra("county_code",countyCode);
+                    Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+                    intent.putExtra("county_code", countyCode);
                     startActivity(intent);
                     finish();
                 }
@@ -124,9 +147,78 @@ public class ChooseAreaActivity extends ActionBarActivity {
 
         queryProvinces();
 
+        drawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (Data().get(position).equals("设置")){
+                    Toast.makeText(getApplicationContext(),"设置",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ChooseAreaActivity.this,SetActivity.class);
+                    startActivity(intent);
 
+                }
+                if (Data().get(position).equals("切换")){
+                    Toast.makeText(getApplicationContext(),"切换",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        drawerArrowDrawable = new DrawerArrowDrawable(resources);
+        drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
+        imageView.setImageDrawable(drawerArrowDrawable);
+
+        drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                offset = slideOffset;
+
+                // Sometimes slideOffset ends up so close to but not quite 1 or 0.
+                if (slideOffset >= .995) {
+                    flipped = true;
+                    drawerArrowDrawable.setFlip(flipped);
+                } else if (slideOffset <= .005) {
+                    flipped = false;
+                    drawerArrowDrawable.setFlip(flipped);
+                }
+
+                drawerArrowDrawable.setParameter(offset);
+            }
+        });
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawer.isDrawerVisible(START)) {
+                    drawer.closeDrawer(START);
+                } else {
+                    drawer.openDrawer(START);
+                }
+            }
+        });
+
+//        final TextView styleButton = (TextView) findViewById(R.id.indicator_style);
+//        styleButton.setOnClickListener(new View.OnClickListener() {
+//            boolean rounded = false;
+//
+//            @Override
+//            public void onClick(View v) {
+//                styleButton.setText(rounded //
+//                        ? resources.getString(R.string.rounded) //
+//                        : resources.getString(R.string.squared));
+//
+//                rounded = !rounded;
+//
+//                drawerArrowDrawable = new DrawerArrowDrawable(resources, rounded);
+//                drawerArrowDrawable.setParameter(offset);
+//                drawerArrowDrawable.setFlip(flipped);
+//                drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
+//
+//                imageView.setImageDrawable(drawerArrowDrawable);
+//            }
+//        });
 
     }
+
+
 
     //    查询全国所有的省，优先从数据库查询，如果没有查询到再去服务器上查询。
     private void queryProvinces() {
@@ -291,5 +383,13 @@ public class ChooseAreaActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private List<String> Data(){
+        List<String> data = new ArrayList<String>();
+        data.add("设置");
+        data.add("切换");
+
+        return data;
     }
 }

@@ -10,6 +10,7 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.coolweather.app.activity.SetActivity;
 import com.coolweather.app.util.HttpCallbackListener;
 import com.coolweather.app.util.HttpUtil;
 import com.coolweather.app.util.Utility;
@@ -17,6 +18,8 @@ import com.coolweather.app.util.Utility;
 public class AutoUpdateService extends Service {
 
     private static String TAG = "AutoUpdateService";
+
+    private static int anHour ;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -35,7 +38,7 @@ public class AutoUpdateService extends Service {
             }
         }).start();
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int anHour = 3*60*60*1000;  //这是3小时的毫秒数
+        anHour = SetActivity.hours;  //这是3小时的毫秒数
         long triggerAtTime = SystemClock.elapsedRealtime()+anHour;
         Intent i = new Intent(this,AutoUpdateService.class);
         PendingIntent pi = PendingIntent.getBroadcast(this,0,i,0);

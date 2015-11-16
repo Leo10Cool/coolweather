@@ -140,8 +140,10 @@ public class WeatherActivity extends ActionBarActivity implements View.OnClickLi
         currentDateText.setText(prefs.getString("current_date", ""));
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
-        Intent intent = new Intent(this, AutoUpdateService.class);
-        startService(intent);
+
+
+//        Intent intent = new Intent(this, AutoUpdateService.class);
+//        startService(intent);
     }
 
     @Override
